@@ -45,4 +45,11 @@ https://disk.yandex.ru/d/BsdiH3DMTHpPrw
 2. Запускаем
     python ./stc/data_load.py
     для парсинга и загрузки данных из файлов в базу данных
+3. После того, как скрипт отработал проверяем содержимое файла ./access.err
+   В него попадут строки, которые не удалось распарсить.
+   Если такое произошло - под эти строки в data_load.py необходимо добавить дополнительное регулярное выражение
+   
+4. Проверяем, что за данные нам выдали, а именно насколько IP адреса в файле client_hostname.csv соответствуют данным в файле access.log
+   Делаем это прогнав SQL запоос:
+   select ip from logdb.public.httpdlog where not (BTRIM(ip) in (select BTRIM(ip) from logdb.public.client_hostname)) group by ip
 

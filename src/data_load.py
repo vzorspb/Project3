@@ -31,6 +31,9 @@ with open('../log/access.log', 'r') as file:
 	                if len(match)==0:
                             filter = 6
 	                    match = re.findall(r'(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}) - - \[(\d\d/.+)\] "(.{3,7}) (/.+) HTTP/\d.\d" (\d+) (\d+) "(\S+)" "(.+)" "\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}"' ,line)
+	                    if len(match)==0:
+                                filter = 7
+                                match = re.findall(r'(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}) - - \[(\d\d/.+)\] "(.{3,7}) (/) HTTP/\d.\d" (\d+) (\d+) "(-)" "(.+)"' ,line)
 
 	if len(match)==0:
             errors.write(line)
@@ -54,7 +57,7 @@ with open('../log/access.log', 'r') as file:
                     print(skeep)
 connection.commit()
 
-exit()
+#exit()
 
 
 st=0
@@ -74,6 +77,8 @@ with open('../log/client_hostname.csv', 'r') as file:
                connection.commit()
                st=0
                print(".")
+sql="insert into useragent (ua_string,clients) select  useragent, count(useragent) as clients from logdb.public.httpdlog group by useragent;"
+cursor.execute(sql)
 connection.commit()
 errors.close()
 
